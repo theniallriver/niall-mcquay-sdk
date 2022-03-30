@@ -86,3 +86,20 @@ Returns a list of all chapters from all LOTR books. Takes optional QueryOptions
 
 #### getChapter(chapterId)
 Returns requested chapter.
+
+
+
+## Dev Documentation -
+### Testing
+
+Our tests run as integrations against TheOneAPI. In order to run them, you must have an api key, as mentioned in Usage.
+
+Run `npm install` to download our development dependencies.
+
+Run `echo "THE_ONE_API_KEY='{YOUR_API_KEY}'" > .env` to set up your development environment.
+
+Once ready, run `npm test` to run our jest tests.
+
+### Deployment to NPM
+
+Run `npm build` to build the SDK for deployment to NPM.

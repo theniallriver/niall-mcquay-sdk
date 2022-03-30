@@ -23,8 +23,8 @@ import {
 } from './interfaces';
 
 export default class TheOneSDK {
-  theOneApiUrl = 'https://the-one-api.dev/v2';
-  apiKey: string;
+  private theOneApiUrl = 'https://the-one-api.dev/v2';
+  private apiKey: string;
 
   constructor(apiKey: string) {
     this.apiKey = apiKey;
