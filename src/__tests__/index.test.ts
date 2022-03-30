@@ -20,6 +20,9 @@ describe('class TheOneSDK', () => {
       it('returns a list of all 3 LOTR books', async () => {
         const response = await theOneClient.listBooks();
         expect(response.docs.length).toBe(3);
+        response.docs.forEach((book) => {
+          expect(book).toHaveProperty('name');
+        });
       });
     });
     describe('when calling the listBooks method sorted ascending by name', () => {
@@ -88,9 +91,10 @@ describe('class TheOneSDK', () => {
     });
     describe('when calling the getBookChapters method with a valid bookId', () => {
       it('returns a book with expected chapters', async () => {
-        const book = await theOneClient.listBookChapters(fellowshipOfTheRingBookId);
-        expect(book.docs[0].chapterName).toBeDefined;
-        expect(book.docs.length).toBe(22);
+        const chapters = await theOneClient.listBookChapters(fellowshipOfTheRingBookId);
+        chapters.docs.forEach((chapter) => {
+          expect(chapter).toHaveProperty('chapterName');
+        });
       });
     });
   });
@@ -104,10 +108,17 @@ describe('class TheOneSDK', () => {
       });
     });
     describe('when calling listMovies with an authorized SDK', () => {
-      it('returns the expected list of movies', async () => {
+      it('returns the expected list of movies in expected shape', async () => {
         const movies = await theOneClient.listMovies();
-        expect(movies.docs[0]).toBeDefined;
-        expect(movies.docs.length).toBe(8);
+        movies.docs.forEach((chapter) => {
+          expect(chapter).toHaveProperty('name');
+          expect(chapter).toHaveProperty('runtimeInMinutes');
+          expect(chapter).toHaveProperty('budgetInMillions');
+          expect(chapter).toHaveProperty('boxOfficeRevenueInMillions');
+          expect(chapter).toHaveProperty('academyAwardNominations');
+          expect(chapter).toHaveProperty('academyAwardWins');
+          expect(chapter).toHaveProperty('rottenTomatoesScore');
+        });
       });
     });
   });
