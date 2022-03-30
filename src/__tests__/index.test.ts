@@ -18,22 +18,22 @@ describe('class TheOneSDK', () => {
   describe('#listBooks', () => {
     describe('when calling the listBooks method', () => {
       it('returns a list of all 3 LOTR books', async () => {
-        const response = await theOneClient.listBooks();
-        expect(response.docs.length).toBe(3);
-        response.docs.forEach((book) => {
+        const books = await theOneClient.listBooks();
+        expect(books.length).toBe(3);
+        books.forEach((book) => {
           expect(book).toHaveProperty('name');
         });
       });
     });
     describe('when calling the listBooks method sorted ascending by name', () => {
       it('returns a list of all 3 LOTR books ascending by name', async () => {
-        const response = await theOneClient.listBooks({
+        const books = await theOneClient.listBooks({
           sort: {
             key: 'name',
             order: 'asc'
           }
         });
-        expect(JSON.stringify(response.docs)).toBe(
+        expect(JSON.stringify(books)).toBe(
           JSON.stringify([
             {
               _id: '5cf5805fb53e011a64671582',
@@ -47,13 +47,13 @@ describe('class TheOneSDK', () => {
     });
     describe('when calling the listBooks method and filtering for The Fellowship Of The Ring ', () => {
       it('returns a list of all 3 LOTR books ascending by name', async () => {
-        const response = await theOneClient.listBooks({
+        const books = await theOneClient.listBooks({
           filter: {
             key: 'name',
             value: 'The Fellowship Of The Ring'
           }
         });
-        expect(JSON.stringify(response.docs)).toBe(
+        expect(JSON.stringify(books)).toBe(
           JSON.stringify([
             {
               _id: '5cf5805fb53e011a64671582',
@@ -76,7 +76,7 @@ describe('class TheOneSDK', () => {
     describe('when calling the getBook method with a valid bookId', () => {
       it('returns a book with a name property', async () => {
         const book = await theOneClient.getBook(fellowshipOfTheRingBookId);
-        expect(book.docs[0].name).toBeDefined();
+        expect(book.name).toBeDefined();
       });
     });
   });
@@ -92,7 +92,7 @@ describe('class TheOneSDK', () => {
     describe('when calling the getBookChapters method with a valid bookId', () => {
       it('returns a book with expected chapters', async () => {
         const chapters = await theOneClient.listBookChapters(fellowshipOfTheRingBookId);
-        chapters.docs.forEach((chapter) => {
+        chapters.forEach((chapter) => {
           expect(chapter).toHaveProperty('chapterName');
         });
       });
@@ -110,7 +110,7 @@ describe('class TheOneSDK', () => {
     describe('when calling listMovies with an authorized SDK', () => {
       it('returns the expected list of movies in expected shape', async () => {
         const movies = await theOneClient.listMovies();
-        movies.docs.forEach((chapter) => {
+        movies.forEach((chapter) => {
           expect(chapter).toHaveProperty('name');
           expect(chapter).toHaveProperty('runtimeInMinutes');
           expect(chapter).toHaveProperty('budgetInMillions');
@@ -151,7 +151,7 @@ describe('class TheOneSDK', () => {
           rottenTomatoesScore: 95
         };
         const movie = await theOneClient.getMovie(returnOfTheKingMovieId);
-        expect(JSON.stringify(movie.docs[0])).toBe(JSON.stringify(expectedMovie));
+        expect(JSON.stringify(movie)).toBe(JSON.stringify(expectedMovie));
       });
     });
   });
@@ -175,7 +175,7 @@ describe('class TheOneSDK', () => {
       it('return list of movie quotes with expected structure', async () => {
         const movieQuotes = await theOneClient.getMovieQuotes(returnOfTheKingMovieId);
 
-        movieQuotes.docs.forEach((quote) => {
+        movieQuotes.forEach((quote) => {
           expect(quote).toHaveProperty('dialog');
           expect(quote).toHaveProperty('movie');
           expect(quote).toHaveProperty('character');
@@ -195,8 +195,8 @@ describe('class TheOneSDK', () => {
     describe('when calling listCharacters with an authorized SDK', () => {
       it('returns the expected list of characters', async () => {
         const movies = await theOneClient.listCharacters();
-        expect(movies.docs[0]).toBeDefined;
-        expect(movies.docs.length).toBe(933);
+        expect(movies).toBeDefined;
+        expect(movies.length).toBe(933);
       });
     });
   });
@@ -232,7 +232,7 @@ describe('class TheOneSDK', () => {
           wikiUrl: 'http://lotr.wikia.com//wiki/Gandalf'
         };
         const character = await theOneClient.getCharacter(gandalfCharacterId);
-        expect(JSON.stringify(character.docs[0])).toBe(JSON.stringify(expectedCharacter));
+        expect(JSON.stringify(character)).toBe(JSON.stringify(expectedCharacter));
       });
     });
   });
@@ -256,7 +256,7 @@ describe('class TheOneSDK', () => {
       it('return list of character quotes with expected structure', async () => {
         const characterQuotes = await theOneClient.getCharacterQuotes(gandalfCharacterId);
 
-        characterQuotes.docs.forEach((quote) => {
+        characterQuotes.forEach((quote) => {
           expect(quote).toHaveProperty('dialog');
           expect(quote).toHaveProperty('movie');
           expect(quote).toHaveProperty('character');
@@ -278,7 +278,7 @@ describe('class TheOneSDK', () => {
     describe('when calling listQuotes with an authorized SDK', () => {
       it('returns the expected list of quotes', async () => {
         const quotes = await theOneClient.listQuotes();
-        quotes.docs.forEach((quote) => {
+        quotes.forEach((quote) => {
           expect(quote).toHaveProperty('_id');
           expect(quote).toHaveProperty('dialog');
           expect(quote).toHaveProperty('movie');
@@ -315,7 +315,7 @@ describe('class TheOneSDK', () => {
           id: '5cd96e05de30eff6ebcceaa3'
         };
         const quote = await theOneClient.getQuote(lastMarchOfTheEntsQuoteId);
-        expect(JSON.stringify(quote.docs[0])).toBe(JSON.stringify(expectedQuote));
+        expect(JSON.stringify(quote)).toBe(JSON.stringify(expectedQuote));
       });
     });
   });
@@ -331,7 +331,7 @@ describe('class TheOneSDK', () => {
     describe('when calling listAllChapters with an authorized SDK', () => {
       it('returns the expected list of chapters', async () => {
         const quotes = await theOneClient.listAllChapters();
-        quotes.docs.forEach((quote) => {
+        quotes.forEach((quote) => {
           expect(quote).toHaveProperty('_id');
           expect(quote).toHaveProperty('chapterName');
           expect(quote).toHaveProperty('book');
@@ -363,7 +363,7 @@ describe('class TheOneSDK', () => {
           book: '5cf5805fb53e011a64671582'
         };
         const chapter = await theOneClient.getChapter(aLongExpectedPartyChapterId);
-        expect(JSON.stringify(chapter.docs[0])).toBe(JSON.stringify(expectedChapter));
+        expect(JSON.stringify(chapter)).toBe(JSON.stringify(expectedChapter));
       });
     });
   });
