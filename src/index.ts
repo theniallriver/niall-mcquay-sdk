@@ -12,7 +12,14 @@ import {
   GetQuoteResponse,
   ListQuotesResponse,
   ListAllChaptersResponse,
-  GetChapterResponse
+  GetChapterResponse,
+  Book,
+  QueryOptions,
+  BaseChapter,
+  Character,
+  ChapterWithBook,
+  Quote,
+  Movie
 } from './interfaces';
 
 export default class TheOneSDK {
@@ -23,14 +30,31 @@ export default class TheOneSDK {
     this.apiKey = apiKey;
   }
 
-  getAuthHeader() {
+  private getAuthHeader() {
     return {
       Authorization: `Bearer ${this.apiKey}`
     };
   }
 
-  async listBooks(): Promise<ListBooksResponse> {
-    const response: AxiosResponse<ListBooksResponse> = await axios.get(`${this.theOneApiUrl}/book`);
+  private generateQueryParamString<T>(queryOptions?: QueryOptions<T>): string {
+    let queryParamString = '';
+
+    if (queryOptions?.sort) {
+      queryParamString = queryParamString.concat(`?sort=${queryOptions.sort.key}:${queryOptions.sort.order}`);
+    }
+
+    if (queryOptions?.filter) {
+      if (queryParamString.length) {
+        queryParamString = queryParamString.concat(`&${queryOptions.filter.key}=${queryOptions.filter.value}`);
+      } else queryParamString = queryParamString.concat(`?${queryOptions.filter.key}=${queryOptions.filter.value}`);
+    }
+
+    return queryParamString;
+  }
+
+  async listBooks(queryConfig?: QueryOptions<Book>): Promise<ListBooksResponse> {
+    const listBooksUrl = `${this.theOneApiUrl}/book${this.generateQueryParamString(queryConfig)}`;
+    const response: AxiosResponse<ListBooksResponse> = await axios.get(listBooksUrl);
 
     return response.data;
   }
@@ -45,20 +69,22 @@ export default class TheOneSDK {
     return response.data;
   }
 
-  async listBookChapters(bookId: string): Promise<ListBookChaptersResponse> {
+  async listBookChapters(bookId: string, queryConfig?: QueryOptions<BaseChapter>): Promise<ListBookChaptersResponse> {
     if (!bookId) {
       throw Error(`${bookId} is not a valid bookId parameter`);
     }
 
-    const getBookChaptersUrl = `${this.theOneApiUrl}/book/${bookId}/chapter`;
+    const getBookChaptersUrl = `${this.theOneApiUrl}/book/${bookId}/chapter${this.generateQueryParamString(
+      queryConfig
+    )}`;
     const response: AxiosResponse<ListBookChaptersResponse> = await axios.get(getBookChaptersUrl);
 
     return response.data;
   }
 
-  async listMovies(): Promise<ListMoviesResponse> {
+  async listMovies(queryConfig?: QueryOptions<Movie>): Promise<ListMoviesResponse> {
     try {
-      const listMoviesUrl = `${this.theOneApiUrl}/movie`;
+      const listMoviesUrl = `${this.theOneApiUrl}/movie${this.generateQueryParamString(queryConfig)}`;
       const response: AxiosResponse<ListMoviesResponse> = await axios.get(listMoviesUrl, {
         headers: this.getAuthHeader()
       });
@@ -106,9 +132,9 @@ export default class TheOneSDK {
     }
   }
 
-  async listCharacters(): Promise<ListCharactersResponse> {
+  async listCharacters(queryConfig?: QueryOptions<Character>): Promise<ListCharactersResponse> {
     try {
-      const listCharactersUrl = `${this.theOneApiUrl}/character`;
+      const listCharactersUrl = `${this.theOneApiUrl}/character${this.generateQueryParamString(queryConfig)}`;
       const response: AxiosResponse<ListCharactersResponse> = await axios.get(listCharactersUrl, {
         headers: this.getAuthHeader()
       });
@@ -156,9 +182,9 @@ export default class TheOneSDK {
     }
   }
 
-  async listQuotes(): Promise<ListQuotesResponse> {
+  async listQuotes(queryConfig?: QueryOptions<Quote>): Promise<ListQuotesResponse> {
     try {
-      const listQuotesUrl = `${this.theOneApiUrl}/quote`;
+      const listQuotesUrl = `${this.theOneApiUrl}/quote${this.generateQueryParamString(queryConfig)}`;
       const response: AxiosResponse<ListQuotesResponse> = await axios.get(listQuotesUrl, {
         headers: this.getAuthHeader()
       });
@@ -188,9 +214,9 @@ export default class TheOneSDK {
     }
   }
 
-  async listAllChapters(): Promise<ListAllChaptersResponse> {
+  async listAllChapters(queryConfig?: QueryOptions<ChapterWithBook>): Promise<ListAllChaptersResponse> {
     try {
-      const listChaptersUrl = `${this.theOneApiUrl}/chapter`;
+      const listChaptersUrl = `${this.theOneApiUrl}/chapter${this.generateQueryParamString(queryConfig)}`;
       const response: AxiosResponse<ListAllChaptersResponse> = await axios.get(listChaptersUrl, {
         headers: this.getAuthHeader()
       });

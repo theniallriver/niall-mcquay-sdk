@@ -104,3 +104,17 @@ export interface ListAllChaptersResponse extends BaseResponse {
 export interface GetChapterResponse extends BaseResponse {
   docs: ChapterWithBook[];
 }
+
+export interface QueryOptions<T> {
+  sort?: SortConfig<T>;
+  filter?: FilterConfig<T>;
+}
+
+export interface SortConfig<T> {
+  key: keyof Omit<T, '_id'>;
+  order: 'asc' | 'desc';
+}
+export interface FilterConfig<T> {
+  key: keyof Omit<T, '_id'>;
+  value: string;
+}

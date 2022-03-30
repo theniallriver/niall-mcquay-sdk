@@ -22,6 +22,44 @@ describe('class TheOneSDK', () => {
         expect(response.docs.length).toBe(3);
       });
     });
+    describe('when calling the listBooks method sorted ascending by name', () => {
+      it('returns a list of all 3 LOTR books ascending by name', async () => {
+        const response = await theOneClient.listBooks({
+          sort: {
+            key: 'name',
+            order: 'asc'
+          }
+        });
+        expect(JSON.stringify(response.docs)).toBe(
+          JSON.stringify([
+            {
+              _id: '5cf5805fb53e011a64671582',
+              name: 'The Fellowship Of The Ring'
+            },
+            { _id: '5cf58080b53e011a64671584', name: 'The Return Of The King' },
+            { _id: '5cf58077b53e011a64671583', name: 'The Two Towers' }
+          ])
+        );
+      });
+    });
+    describe('when calling the listBooks method and filtering for The Fellowship Of The Ring ', () => {
+      it('returns a list of all 3 LOTR books ascending by name', async () => {
+        const response = await theOneClient.listBooks({
+          filter: {
+            key: 'name',
+            value: 'The Fellowship Of The Ring'
+          }
+        });
+        expect(JSON.stringify(response.docs)).toBe(
+          JSON.stringify([
+            {
+              _id: '5cf5805fb53e011a64671582',
+              name: 'The Fellowship Of The Ring'
+            }
+          ])
+        );
+      });
+    });
   });
 
   describe('#getBook', () => {
